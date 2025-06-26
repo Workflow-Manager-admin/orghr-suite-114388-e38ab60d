@@ -1,20 +1,4 @@
-INFO:     Started server process [27379]
+INFO:     Started server process [28320]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:3001 (Press CTRL+C to quit)
-ERROR:    Internal server error on /employees POST: name 'datetime' is not defined
-INFO:     100.64.4.167:55950 - "POST /employees HTTP/1.1" 500 Internal Server Error
-ERROR:    Internal server error on /employees POST: name 'datetime' is not defined
-INFO:     100.64.4.167:55956 - "POST /employees HTTP/1.1" 500 Internal Server Error
-ERROR:    Internal server error on /employees POST: name 'datetime' is not defined
-INFO:     100.64.4.167:36708 - "POST /employees HTTP/1.1" 500 Internal Server Error
-ERROR:    Internal server error on /employees POST: name 'datetime' is not defined
-INFO:     100.64.4.167:36718 - "POST /employees HTTP/1.1" 500 Internal Server Error
-ERROR:    Internal server error on /employees POST: name 'datetime' is not defined
-INFO:     100.64.4.167:37782 - "POST /employees HTTP/1.1" 500 Internal Server Error
-ERROR:    Internal server error on /employees POST: name 'datetime' is not defined
-INFO:     100.64.4.167:37784 - "POST /employees HTTP/1.1" 500 Internal Server Error
-ERROR:    Internal server error on /employees POST: name 'datetime' is not defined
-INFO:     100.64.4.167:37794 - "POST /employees HTTP/1.1" 500 Internal Server Error
-ERROR:    Internal server error on /employees POST: name 'datetime' is not defined
-INFO:     100.64.4.167:37802 - "POST /employees HTTP/1.1" 500 Internal Server Error

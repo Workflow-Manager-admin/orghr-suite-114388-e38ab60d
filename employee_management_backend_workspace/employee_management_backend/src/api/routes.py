@@ -44,68 +44,106 @@ def get_employee(employee_id: int, db: Session = Depends(get_db)):
 @router.post("/employees", response_model=EmployeeOut, status_code=201, tags=["Employees"], summary="Create employee")
 def create_new_employee(employee: EmployeeCreate, db: Session = Depends(get_db), request: Request = None):
     """
-    Create a new employee record.
+    Create a new employee record using the provided EmployeeCreate model.
 
     Validates that department_id and role_id exist before creating the employee.
-    Returns a user-friendly error message if they do not.
+    Ensures all required fields are set and defaults are filled as needed.
+    Validates field requirements between the EmployeeCreate Pydantic and EmployeeORM models.
     Handles validation (400) and server errors (500) with clear client messages.
+    Hashes the password safely and populates the ORM model fully.
+
+    Returns:
+        - 201 with created EmployeeOut if success.
+        - 400 with user-facing message if data invalid or duplicate.
+        - 500 only for true unexpected backend error.
     """
     try:
+        # Check if email is already registered (unique constraint)
         exists = db.query(EmployeeORM).filter_by(email=employee.email).first()
         if exists:
-            raise HTTPException(status_code=400, detail="Email already registered")
+            raise HTTPException(status_code=400, detail="Email already registered; please use another email.")
 
-        # Validate Department
+        # Presence and type check for first_name/last_name/email
+        for field in ["first_name", "last_name", "email"]:
+            val = getattr(employee, field, None)
+            if not val or not isinstance(val, str) or (len(val.strip()) < 1):
+                raise HTTPException(status_code=400, detail=f"{field.replace('_',' ').title()} is required and must be a non-empty string.")
+
+        # Validate Department existence
         dep = db.query(DepartmentORM).filter_by(id=employee.department_id).first()
         if not dep:
             raise HTTPException(status_code=400, detail=f"Department ID {employee.department_id} not found")
 
-        # Validate Role
+        # Validate Role existence
         role = db.query(RoleORM).filter_by(id=employee.role_id).first()
         if not role:
             raise HTTPException(status_code=400, detail=f"Role ID {employee.role_id} not found")
 
-        if not employee.password or not isinstance(employee.password, str) or len(employee.password) < 1:
-            raise HTTPException(status_code=400, detail="Password is required")
+        # Defensive: Ensure all types match exactly for department_id/role_id (sqlite can be permissive)
+        try:
+            dept_id = int(employee.department_id)
+            role_id = int(employee.role_id)
+        except Exception:
+            raise HTTPException(status_code=400, detail="Department and Role IDs must be integers.")
 
-        # Defensive: Ensure all types match exactly for department_id/role_id
-        dept_id = int(employee.department_id)
-        role_id = int(employee.role_id)
+        # Password: must be present, non-empty string, secure length?
+        if not employee.password or not isinstance(employee.password, str) or len(employee.password.strip()) < 1:
+            raise HTTPException(status_code=400, detail="Password is required and must be a non-empty string.")
 
-        # Used explicit type conversion above to avoid type issues (e.g. with strings from JSON).
-        hashed_pw = pwd_context.hash(employee.password)
+        # Enforce password length policy (e.g. min 4 chars, customizable)
+        if len(employee.password) < 4:
+            raise HTTPException(status_code=400, detail="Password must be at least 4 characters long.")
 
+        # Use current time for created_at (ORM default, but explicit is safe)
+        created_at = datetime.utcnow()
+
+        # Hash the password for storage using passlib context (defensive: strip leading/trailing spaces)
+        try:
+            hashed_pw = pwd_context.hash(employee.password.strip())
+        except Exception as e:
+            logger.error(f"Password hashing failed: {str(e)}")
+            raise HTTPException(status_code=500, detail="Server password hashing error.")
+
+        # Create and populate the ORM model
         emp = EmployeeORM(
-            first_name=employee.first_name,
-            last_name=employee.last_name,
-            email=employee.email,
-            is_active=bool(employee.is_active),  # Defensive cast for booleans
+            first_name=employee.first_name.strip(),
+            last_name=employee.last_name.strip(),
+            email=employee.email.strip().lower(),
+            is_active=bool(employee.is_active),
             department_id=dept_id,
             role_id=role_id,
             hashed_password=hashed_pw,
-            created_at=datetime.utcnow(),
+            created_at=created_at,
         )
+
         db.add(emp)
-        db.commit()
+        try:
+            db.commit()
+        except IntegrityError as e:
+            db.rollback()
+            logger.warning(f"Integrity error on employee creation: {str(e)}")
+            raise HTTPException(
+                status_code=400,
+                detail="Database integrity error (possibly duplicate email or invalid related id)."
+            )
+
         db.refresh(emp)
-        return employee_orm_to_pydantic(emp, dep, role)
-    except HTTPException as e:
-        # Client error, re-raise
+        out = employee_orm_to_pydantic(emp, dep, role)
+        return out
+
+    except HTTPException:
+        # FastAPI will format these correctly for client
         raise
     except ValidationError as e:
         db.rollback()
+        logger.error(f"Validation error in employee creation: {e.errors()}")
         raise HTTPException(status_code=400, detail=f"Validation failed: {e.errors()}")
-    except IntegrityError as e:
-        db.rollback()
-        logger.warning(f"Integrity error on employee creation: {str(e)}")
-        raise HTTPException(status_code=400, detail="Database integrity error (possibly duplicate email or invalid related id).")
     except Exception as e:
         db.rollback()
-        # Improved logging for debugging deeper type/mapping/column errors
         logger.error(f"Internal server error on /employees POST: {type(e).__name__}: {str(e)}")
         import traceback
         logger.error(traceback.format_exc())
-        # Send detailed message to help debug (strip in prod)
+        # User-facing error (strip down in prod, but include for debug)
         detail_msg = f"Internal server error: {type(e).__name__}: {str(e)}"
         raise HTTPException(status_code=500, detail=detail_msg)
 
