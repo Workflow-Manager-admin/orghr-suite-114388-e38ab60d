@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from pydantic import ValidationError
 import logging
+from datetime import datetime
 from .models import (
     Employee, EmployeeCreate, EmployeeUpdate, EmployeeOut,
     Department, DepartmentOut, Role, RoleOut,
@@ -42,7 +43,8 @@ def get_employee(employee_id: int, db: Session = Depends(get_db)):
 
 @router.post("/employees", response_model=EmployeeOut, status_code=201, tags=["Employees"], summary="Create employee")
 def create_new_employee(employee: EmployeeCreate, db: Session = Depends(get_db), request: Request = None):
-    """Create a new employee record.
+    """
+    Create a new employee record.
 
     Validates that department_id and role_id exist before creating the employee.
     Returns a user-friendly error message if they do not.
@@ -66,14 +68,20 @@ def create_new_employee(employee: EmployeeCreate, db: Session = Depends(get_db),
         if not employee.password or not isinstance(employee.password, str) or len(employee.password) < 1:
             raise HTTPException(status_code=400, detail="Password is required")
 
+        # Defensive: Ensure all types match exactly for department_id/role_id
+        dept_id = int(employee.department_id)
+        role_id = int(employee.role_id)
+
+        # Used explicit type conversion above to avoid type issues (e.g. with strings from JSON).
         hashed_pw = pwd_context.hash(employee.password)
+
         emp = EmployeeORM(
             first_name=employee.first_name,
             last_name=employee.last_name,
             email=employee.email,
-            is_active=employee.is_active,
-            department_id=employee.department_id,
-            role_id=employee.role_id,
+            is_active=bool(employee.is_active),  # Defensive cast for booleans
+            department_id=dept_id,
+            role_id=role_id,
             hashed_password=hashed_pw,
             created_at=datetime.utcnow(),
         )
@@ -93,8 +101,13 @@ def create_new_employee(employee: EmployeeCreate, db: Session = Depends(get_db),
         raise HTTPException(status_code=400, detail="Database integrity error (possibly duplicate email or invalid related id).")
     except Exception as e:
         db.rollback()
-        logger.error(f"Internal server error on /employees POST: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error: could not create employee.")
+        # Improved logging for debugging deeper type/mapping/column errors
+        logger.error(f"Internal server error on /employees POST: {type(e).__name__}: {str(e)}")
+        import traceback
+        logger.error(traceback.format_exc())
+        # Send detailed message to help debug (strip in prod)
+        detail_msg = f"Internal server error: {type(e).__name__}: {str(e)}"
+        raise HTTPException(status_code=500, detail=detail_msg)
 
 @router.put("/employees/{employee_id}", response_model=EmployeeOut, tags=["Employees"], summary="Update employee")
 def update_employee_endpoint(employee_id: int, employee: EmployeeUpdate, db: Session = Depends(get_db)):
