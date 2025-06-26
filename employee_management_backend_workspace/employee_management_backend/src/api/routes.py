@@ -37,10 +37,25 @@ def get_employee(employee_id: int, db: Session = Depends(get_db)):
 
 @router.post("/employees", response_model=EmployeeOut, status_code=201, tags=["Employees"], summary="Create employee")
 def create_new_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
-    """Create a new employee record."""
+    """Create a new employee record.
+
+    Validates that department_id and role_id exist before creating the employee.
+    Returns a user-friendly error message if they do not.
+    """
     exists = db.query(EmployeeORM).filter_by(email=employee.email).first()
     if exists:
         raise HTTPException(status_code=400, detail="Email already registered")
+
+    # Validate Department
+    dep = db.query(DepartmentORM).filter_by(id=employee.department_id).first()
+    if not dep:
+        raise HTTPException(status_code=400, detail=f"Department ID {employee.department_id} not found")
+
+    # Validate Role
+    role = db.query(RoleORM).filter_by(id=employee.role_id).first()
+    if not role:
+        raise HTTPException(status_code=400, detail=f"Role ID {employee.role_id} not found")
+
     hashed_pw = pwd_context.hash(employee.password)
     emp = EmployeeORM(
         first_name=employee.first_name,
@@ -52,11 +67,16 @@ def create_new_employee(employee: EmployeeCreate, db: Session = Depends(get_db))
         hashed_password=hashed_pw,
         created_at=datetime.utcnow(),
     )
-    db.add(emp)
-    db.commit()
-    db.refresh(emp)
-    dep = db.query(DepartmentORM).filter_by(id=emp.department_id).first()
-    role = db.query(RoleORM).filter_by(id=emp.role_id).first()
+    try:
+        db.add(emp)
+        db.commit()
+        db.refresh(emp)
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail=f"Failed to create employee: {str(exc)}"
+        )
     return employee_orm_to_pydantic(emp, dep, role)
 
 @router.put("/employees/{employee_id}", response_model=EmployeeOut, tags=["Employees"], summary="Update employee")
