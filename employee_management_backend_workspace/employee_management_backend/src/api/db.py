@@ -85,10 +85,11 @@ def init_db():
 
     db.commit()
 
-    # Pre-seed default admin user
-    admin_email = "admin@admin.com"
+    # Pre-seed default admin user with credentials: email="admin", password="admin"
+    admin_email = "admin"
     admin_user = db.query(EmployeeORM).filter_by(email=admin_email).first()
     if not admin_user:
+        # Avoid duplicate admin creation and ensure safe hashing
         hashed_pw = pwd_context.hash("admin")
         db.add(EmployeeORM(
             first_name="Admin",

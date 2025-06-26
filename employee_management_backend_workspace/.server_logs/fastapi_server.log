@@ -1,80 +1,132 @@
-INFO:     Started server process [2305]
+INFO:     Started server process [18975]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:3001 (Press CTRL+C to quit)
-INFO:     100.64.4.167:54268 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54266 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54288 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47118 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47114 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47128 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47108 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47142 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47154 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47158 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47168 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54476 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54466 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54478 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54482 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54496 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54502 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54516 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54526 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:41408 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:41410 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:41416 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:41432 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:41446 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:41456 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:45164 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:45166 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:45184 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:45200 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:45210 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:45226 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47786 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47798 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47800 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47804 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47814 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47818 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47820 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:47822 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54976 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54986 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54988 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54280 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54284 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54298 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:54300 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:37508 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:37516 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:37542 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:37528 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:37548 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:37546 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:37568 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:37578 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:37584 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:37586 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:56262 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:56264 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:56280 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:56282 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:56294 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:56302 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:58976 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:58982 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:58984 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:59000 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:59002 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:59008 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:59016 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:59030 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:59046 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:59048 - "HEAD /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:59050 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:59060 - "GET /docs HTTP/1.1" 200 OK
-INFO:     100.64.4.167:59074 - "GET /openapi.json HTTP/1.1" 200 OK
-INFO:     100.64.4.167:59088 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     100.64.4.167:59698 - "POST /employees HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 214, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/concurrency.py", line 37, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 967, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/src/api/routes.py", line 53, in create_new_employee
+    created_at=datetime.utcnow(),
+               ^^^^^^^^
+NameError: name 'datetime' is not defined. Did you forget to import 'datetime'
+INFO:     100.64.4.167:59706 - "POST /employees HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
+    raise exc
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 714, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 734, in app
+    await route.handle(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 214, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/starlette/concurrency.py", line 37, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2470, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 967, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kavia/workspace/code-generation/orghr-suite-114388-e38ab60d/employee_management_backend_workspace/employee_management_backend/src/api/routes.py", line 53, in create_new_employee
+    created_at=datetime.utcnow(),
+               ^^^^^^^^
+NameError: name 'datetime' is not defined. Did you forget to import 'datetime'
