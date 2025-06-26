@@ -1,6 +1,9 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status, Request
 from typing import List
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+from pydantic import ValidationError
+import logging
 from .models import (
     Employee, EmployeeCreate, EmployeeUpdate, EmployeeOut,
     Department, DepartmentOut, Role, RoleOut,
@@ -10,6 +13,8 @@ from .db import (
     get_db, EmployeeORM, DepartmentORM, RoleORM, pwd_context
 )
 from .auth import get_current_active_user
+
+logger = logging.getLogger("uvicorn.error")
 
 router = APIRouter()
 
@@ -36,48 +41,60 @@ def get_employee(employee_id: int, db: Session = Depends(get_db)):
     return employee_orm_to_pydantic(emp, dep, role)
 
 @router.post("/employees", response_model=EmployeeOut, status_code=201, tags=["Employees"], summary="Create employee")
-def create_new_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
+def create_new_employee(employee: EmployeeCreate, db: Session = Depends(get_db), request: Request = None):
     """Create a new employee record.
 
     Validates that department_id and role_id exist before creating the employee.
     Returns a user-friendly error message if they do not.
+    Handles validation (400) and server errors (500) with clear client messages.
     """
-    exists = db.query(EmployeeORM).filter_by(email=employee.email).first()
-    if exists:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    # Validate Department
-    dep = db.query(DepartmentORM).filter_by(id=employee.department_id).first()
-    if not dep:
-        raise HTTPException(status_code=400, detail=f"Department ID {employee.department_id} not found")
-
-    # Validate Role
-    role = db.query(RoleORM).filter_by(id=employee.role_id).first()
-    if not role:
-        raise HTTPException(status_code=400, detail=f"Role ID {employee.role_id} not found")
-
-    hashed_pw = pwd_context.hash(employee.password)
-    emp = EmployeeORM(
-        first_name=employee.first_name,
-        last_name=employee.last_name,
-        email=employee.email,
-        is_active=employee.is_active,
-        department_id=employee.department_id,
-        role_id=employee.role_id,
-        hashed_password=hashed_pw,
-        created_at=datetime.utcnow(),
-    )
     try:
+        exists = db.query(EmployeeORM).filter_by(email=employee.email).first()
+        if exists:
+            raise HTTPException(status_code=400, detail="Email already registered")
+
+        # Validate Department
+        dep = db.query(DepartmentORM).filter_by(id=employee.department_id).first()
+        if not dep:
+            raise HTTPException(status_code=400, detail=f"Department ID {employee.department_id} not found")
+
+        # Validate Role
+        role = db.query(RoleORM).filter_by(id=employee.role_id).first()
+        if not role:
+            raise HTTPException(status_code=400, detail=f"Role ID {employee.role_id} not found")
+
+        if not employee.password or not isinstance(employee.password, str) or len(employee.password) < 1:
+            raise HTTPException(status_code=400, detail="Password is required")
+
+        hashed_pw = pwd_context.hash(employee.password)
+        emp = EmployeeORM(
+            first_name=employee.first_name,
+            last_name=employee.last_name,
+            email=employee.email,
+            is_active=employee.is_active,
+            department_id=employee.department_id,
+            role_id=employee.role_id,
+            hashed_password=hashed_pw,
+            created_at=datetime.utcnow(),
+        )
         db.add(emp)
         db.commit()
         db.refresh(emp)
-    except Exception as exc:
+        return employee_orm_to_pydantic(emp, dep, role)
+    except HTTPException as e:
+        # Client error, re-raise
+        raise
+    except ValidationError as e:
         db.rollback()
-        raise HTTPException(
-            status_code=400,
-            detail=f"Failed to create employee: {str(exc)}"
-        )
-    return employee_orm_to_pydantic(emp, dep, role)
+        raise HTTPException(status_code=400, detail=f"Validation failed: {e.errors()}")
+    except IntegrityError as e:
+        db.rollback()
+        logger.warning(f"Integrity error on employee creation: {str(e)}")
+        raise HTTPException(status_code=400, detail="Database integrity error (possibly duplicate email or invalid related id).")
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Internal server error on /employees POST: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error: could not create employee.")
 
 @router.put("/employees/{employee_id}", response_model=EmployeeOut, tags=["Employees"], summary="Update employee")
 def update_employee_endpoint(employee_id: int, employee: EmployeeUpdate, db: Session = Depends(get_db)):
