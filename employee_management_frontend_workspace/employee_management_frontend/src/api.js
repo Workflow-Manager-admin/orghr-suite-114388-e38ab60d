@@ -1,7 +1,9 @@
-//
-// Simple API wrapper for backend integration with JWT handling
-//
-const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:3001";
+/**
+ * API base URL for backend integration with JWT handling.
+ * All API calls from the frontend will use the provided backend URL.
+ * See: https://vscode-internal-58-beta.beta01.cloud.kavia.ai:3001
+ */
+const API_BASE = "https://vscode-internal-58-beta.beta01.cloud.kavia.ai:3001";
 
 let authToken = null;
 
