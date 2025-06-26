@@ -1,8 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from .models import Token, UserLogin, Employee
+from .models import Token, UserLogin, Employee, employee_orm_to_pydantic
 from .auth import authenticate_user, create_access_token, get_current_active_user
+from .db import get_db
+from sqlalchemy.orm import Session
 from datetime import timedelta
+from fastapi import Request
 
 router = APIRouter(
     prefix="/auth",
@@ -11,11 +14,13 @@ router = APIRouter(
 
 # PUBLIC_INTERFACE
 @router.post("/login", response_model=Token, summary="Authenticate and get JWT token")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(
+    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+):
     """
     Authenticates a user and returns a JWT access token.
     """
-    user = authenticate_user(form_data.username, form_data.password)
+    user = authenticate_user(form_data.username, form_data.password, db=db)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -27,11 +32,12 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 # PUBLIC_INTERFACE
 @router.get("/me", response_model=Employee, summary="Get current user")
-async def get_me(current_user: Employee = Depends(get_current_active_user)):
+async def get_me(current_user = Depends(get_current_active_user)):
     """
     Get current authenticated user details.
     """
-    return current_user
+    # Return pydantic model version of ORM object
+    return employee_orm_to_pydantic(current_user)
 
 # PUBLIC_INTERFACE
 @router.post("/logout", summary="Logout (client side)")

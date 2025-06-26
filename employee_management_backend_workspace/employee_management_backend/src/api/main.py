@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .auth_endpoints import router as auth_router
 from .routes import router as core_router
+from .db import init_db
 
 openapi_tags = [
     {"name": "Employees", "description": "Employee CRUD operations"},
@@ -10,6 +11,9 @@ openapi_tags = [
     {"name": "Departments", "description": "Department management"},
     {"name": "Authentication", "description": "Login, logout, and user management"},
 ]
+
+# Run DB migration at app start
+init_db()
 
 app = FastAPI(
     title="Employee Management API",

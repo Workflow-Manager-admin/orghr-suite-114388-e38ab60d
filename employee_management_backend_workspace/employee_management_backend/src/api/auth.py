@@ -5,7 +5,8 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
 from .models import TokenData, Employee
-from .db import db_employees
+from .db import get_db, EmployeeORM
+from sqlalchemy.orm import Session
 
 # Secret key management: load from environment in prod
 SECRET_KEY = "REPLACE_THIS_WITH_A_SECURE_RANDOM_KEY"
@@ -22,13 +23,25 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-def authenticate_user(email: str, password: str):
-    user = next((u for u in db_employees.values() if u.email == email), None)
+def authenticate_user(email: str, password: str, db: Session = None):
+    """
+    Returns ORM Employee object if credentials valid, else None.
+    """
+    needs_close = False
+    if db is None:
+        db = next(get_db())
+        needs_close = True
+    user = db.query(EmployeeORM).filter(EmployeeORM.email == email).first()
     if not user:
+        if needs_close:
+            db.close()
         return None
-    # Password - placeholder, plain text, do not use in prod!
-    if password != "password":
+    if not verify_password(password, user.hashed_password):
+        if needs_close:
+            db.close()
         return None
+    if needs_close:
+        db.close()
     return user
 
 # PUBLIC_INTERFACE
@@ -41,8 +54,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 # PUBLIC_INTERFACE
-async def get_current_user(token: str = Depends(oauth2_scheme)) -> Employee:
-    """Dependency to get current authenticated user from token."""
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> Employee:
+    """Dependency to get current authenticated user from token (returns ORM obj)."""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -56,14 +69,14 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> Employee:
         token_data = TokenData(user_id=user_id)
     except JWTError:
         raise credentials_exception
-    user = db_employees.get(token_data.user_id)
+    user = db.query(EmployeeORM).filter(EmployeeORM.id == token_data.user_id).first()
     if user is None:
         raise credentials_exception
     return user
 
 # PUBLIC_INTERFACE
-async def get_current_active_user(current_user: Employee = Depends(get_current_user)):
-    """Dependency to ensure user is active."""
+async def get_current_active_user(current_user: EmployeeORM = Depends(get_current_user)):
+    """Dependency to ensure user is active (returns ORM obj)."""
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user

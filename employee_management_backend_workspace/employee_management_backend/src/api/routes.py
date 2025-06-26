@@ -1,74 +1,123 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from typing import List
-from .models import Employee, EmployeeCreate, EmployeeUpdate, EmployeeOut, Department, DepartmentOut, Role, RoleOut
-from .db import db_employees, db_departments, db_roles, create_employee, update_employee, delete_employee
+from sqlalchemy.orm import Session
+from .models import (
+    Employee, EmployeeCreate, EmployeeUpdate, EmployeeOut,
+    Department, DepartmentOut, Role, RoleOut,
+    employee_orm_to_pydantic, department_orm_to_pydantic, role_orm_to_pydantic
+)
+from .db import (
+    get_db, EmployeeORM, DepartmentORM, RoleORM, pwd_context
+)
 from .auth import get_current_active_user
 
 router = APIRouter()
 
 # ---------------- Employee Endpoints --------------------
 @router.get("/employees", response_model=List[EmployeeOut], tags=["Employees"], summary="List all employees")
-def list_employees():
-    """List all employees."""
-    return [
-        EmployeeOut(**emp.dict(), department=db_departments.get(emp.department_id), role=db_roles.get(emp.role_id))
-        for emp in db_employees.values()
-    ]
+def list_employees(db: Session = Depends(get_db)):
+    """List all employees (joined with dept/role)."""
+    employees = db.query(EmployeeORM).all()
+    results = []
+    for emp in employees:
+        dep = db.query(DepartmentORM).filter_by(id=emp.department_id).first()
+        role = db.query(RoleORM).filter_by(id=emp.role_id).first()
+        results.append(employee_orm_to_pydantic(emp, dep, role))
+    return results
 
 @router.get("/employees/{employee_id}", response_model=EmployeeOut, tags=["Employees"], summary="Get employee details")
-def get_employee(employee_id: int):
+def get_employee(employee_id: int, db: Session = Depends(get_db)):
     """Get employee details by ID."""
-    emp = db_employees.get(employee_id)
+    emp = db.query(EmployeeORM).filter_by(id=employee_id).first()
     if not emp:
         raise HTTPException(status_code=404, detail="Employee not found")
-    return EmployeeOut(**emp.dict(), department=db_departments.get(emp.department_id), role=db_roles.get(emp.role_id))
+    dep = db.query(DepartmentORM).filter_by(id=emp.department_id).first()
+    role = db.query(RoleORM).filter_by(id=emp.role_id).first()
+    return employee_orm_to_pydantic(emp, dep, role)
 
 @router.post("/employees", response_model=EmployeeOut, status_code=201, tags=["Employees"], summary="Create employee")
-def create_new_employee(employee: EmployeeCreate):
+def create_new_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
     """Create a new employee record."""
-    emp = create_employee(employee)
-    return EmployeeOut(**emp.dict(), department=db_departments.get(emp.department_id), role=db_roles.get(emp.role_id))
+    exists = db.query(EmployeeORM).filter_by(email=employee.email).first()
+    if exists:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    hashed_pw = pwd_context.hash(employee.password)
+    emp = EmployeeORM(
+        first_name=employee.first_name,
+        last_name=employee.last_name,
+        email=employee.email,
+        is_active=employee.is_active,
+        department_id=employee.department_id,
+        role_id=employee.role_id,
+        hashed_password=hashed_pw,
+        created_at=datetime.utcnow(),
+    )
+    db.add(emp)
+    db.commit()
+    db.refresh(emp)
+    dep = db.query(DepartmentORM).filter_by(id=emp.department_id).first()
+    role = db.query(RoleORM).filter_by(id=emp.role_id).first()
+    return employee_orm_to_pydantic(emp, dep, role)
 
 @router.put("/employees/{employee_id}", response_model=EmployeeOut, tags=["Employees"], summary="Update employee")
-def update_employee_endpoint(employee_id: int, employee: EmployeeUpdate):
+def update_employee_endpoint(employee_id: int, employee: EmployeeUpdate, db: Session = Depends(get_db)):
     """Update employee information."""
-    updated = update_employee(employee_id, employee)
-    if not updated:
+    emp = db.query(EmployeeORM).filter_by(id=employee_id).first()
+    if not emp:
         raise HTTPException(status_code=404, detail="Employee not found")
-    return EmployeeOut(**updated.dict(), department=db_departments.get(updated.department_id), role=db_roles.get(updated.role_id))
+
+    for field, value in employee.dict(exclude_unset=True).items():
+        if field == "password":
+            if value:
+                setattr(emp, "hashed_password", pwd_context.hash(value))
+        else:
+            setattr(emp, field, value)
+    db.commit()
+    db.refresh(emp)
+    dep = db.query(DepartmentORM).filter_by(id=emp.department_id).first()
+    role = db.query(RoleORM).filter_by(id=emp.role_id).first()
+    return employee_orm_to_pydantic(emp, dep, role)
 
 @router.delete("/employees/{employee_id}", status_code=204, tags=["Employees"], summary="Delete employee")
-def delete_employee_endpoint(employee_id: int):
+def delete_employee_endpoint(employee_id: int, db: Session = Depends(get_db)):
     """Delete an employee by ID."""
-    success = delete_employee(employee_id)
-    if not success:
+    emp = db.query(EmployeeORM).filter_by(id=employee_id).first()
+    if not emp:
         raise HTTPException(status_code=404, detail="Employee not found")
+    db.delete(emp)
+    db.commit()
     return
 
 # ---------------- Department Endpoints --------------------
 @router.get("/departments", response_model=List[DepartmentOut], tags=["Departments"], summary="List all departments")
-def list_departments():
+def list_departments(db: Session = Depends(get_db)):
     """List all departments."""
-    return list(db_departments.values())
+    return [department_orm_to_pydantic(dep) for dep in db.query(DepartmentORM).all()]
 
 @router.post("/departments", response_model=DepartmentOut, status_code=201, tags=["Departments"], summary="Create a department")
-def create_department(department: Department):
+def create_department(department: Department, db: Session = Depends(get_db)):
     """Create a new department."""
-    if department.id in db_departments:
+    if db.query(DepartmentORM).filter_by(id=department.id).first():
         raise HTTPException(status_code=400, detail="Department ID already exists")
-    db_departments[department.id] = department
-    return department
+    dep = DepartmentORM(id=department.id, name=department.name, description=department.description)
+    db.add(dep)
+    db.commit()
+    db.refresh(dep)
+    return department_orm_to_pydantic(dep)
 
 # ---------------- Role Endpoints --------------------
 @router.get("/roles", response_model=List[RoleOut], tags=["Roles"], summary="List all roles")
-def list_roles():
+def list_roles(db: Session = Depends(get_db)):
     """List all roles."""
-    return list(db_roles.values())
+    return [role_orm_to_pydantic(role) for role in db.query(RoleORM).all()]
 
 @router.post("/roles", response_model=RoleOut, status_code=201, tags=["Roles"], summary="Create a role")
-def create_role(role: Role):
+def create_role(role: Role, db: Session = Depends(get_db)):
     """Create a new role."""
-    if role.id in db_roles:
+    if db.query(RoleORM).filter_by(id=role.id).first():
         raise HTTPException(status_code=400, detail="Role ID already exists")
-    db_roles[role.id] = role
-    return role
+    roleobj = RoleORM(id=role.id, name=role.name, description=role.description)
+    db.add(roleobj)
+    db.commit()
+    db.refresh(roleobj)
+    return role_orm_to_pydantic(roleobj)

@@ -2,6 +2,9 @@ from typing import Optional, List
 from pydantic import BaseModel, Field
 from datetime import datetime
 
+# --- SQLAlchemy ORM imports for helpers ---
+from .db import DepartmentORM, RoleORM, EmployeeORM
+
 # PUBLIC_INTERFACE
 class Department(BaseModel):
     """Department model."""
@@ -76,3 +79,26 @@ class DepartmentOut(Department):
 class EmployeeOut(Employee):
     department: Optional[DepartmentOut]
     role: Optional[RoleOut]
+
+# --- ORM --> Pydantic utilities ---
+
+def department_orm_to_pydantic(orm: DepartmentORM) -> DepartmentOut:
+    return DepartmentOut(id=orm.id, name=orm.name, description=orm.description)
+
+def role_orm_to_pydantic(orm: RoleORM) -> RoleOut:
+    return RoleOut(id=orm.id, name=orm.name, description=orm.description)
+
+def employee_orm_to_pydantic(emp: EmployeeORM, dep: DepartmentORM = None, role: RoleORM = None) -> EmployeeOut:
+    """Convert SQLAlchemy employee + relations to pydantic EmployeeOut."""
+    return EmployeeOut(
+        id=emp.id,
+        first_name=emp.first_name,
+        last_name=emp.last_name,
+        email=emp.email,
+        is_active=emp.is_active,
+        department_id=emp.department_id,
+        role_id=emp.role_id,
+        created_at=emp.created_at,
+        department=department_orm_to_pydantic(dep) if dep else None,
+        role=role_orm_to_pydantic(role) if role else None,
+    )
